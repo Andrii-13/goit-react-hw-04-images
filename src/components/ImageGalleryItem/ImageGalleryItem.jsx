@@ -1,11 +1,15 @@
 import css from './ImageGalleryItem.module.css';
 import { Modal } from 'components/Modal/Modal';
 
-export const ImageGalleryItem = () => {
+export const ImageGalleryItemImage = ({ unit }) => {
   return (
-    <li className={css.imageGalleryItem}>
-      <img src="" alt="" className={css.imageGalleryItemImage} />
-      <Modal />
-    </li>
+    <>
+      <img
+        src={unit.webformatURL}
+        alt={unit.tags}
+        className={css.imageGalleryItemImage}
+      />
+      <Modal img={unit.largeImageURL} />
+    </>
   );
 };
