@@ -14,25 +14,47 @@ export class App extends Component {
     name: '',
     buttonActive: false,
     pagesView: 1,
-    // totalImg: 0,
     loader: false,
     error: false,
+    galleryRender: false,
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
     const { name, pagesView } = this.state;
     if (prevState.name !== name || prevState.pagesView !== pagesView) {
+      if(!name){
+        this.setState({
+          name: '',
+          galleryRender: false,
+        });
+        return
+      }
       this.setState({
-        loader: true, error: false,
+        loader: true,
+        error: false,
+        galleryRender: true,
       });
       try {
         const responce = await respFromBack(name, pagesView);
-        this.setState({
-          units: responce,
-          buttonActive: true,
-        });
+          console.log(responce);
+        if (responce.length >= 1) {
+          this.setState({
+            units: responce,
+            buttonActive: true,
+          });
+        } else {
+          this.setState({
+            galleryRender: false,
+          });
+          toast('Nothing was found', {
+            icon: '🟨',
+          });
+        }
       } catch (error) {
         this.setState({ error: true });
+        toast('Error, Please reload this page!', {
+          icon: '🟥',
+        });
       } finally {
         this.setState({ loader: false });
       }
@@ -40,21 +62,19 @@ export class App extends Component {
   };
 
   submitSearchbar = data => {
-    if (!data.trim()) {
-      toast.error('You enter empty query');
-      return;
-    }
-    console.log(this.state.units.length);
-    if (this.state.units.length < 1) {
-      toast.error('nothing found');
+    console.log(data);
+    this.setState({
+      name: '',
+      buttonActive: false,
+      galleryRender: false,
+    });
+
+    if (data) {
       this.setState({
-        buttonActive: false,
+        name: data,
+        pagesView: 1,
       });
     }
-    this.setState({
-      name: data.trim(),
-      pagesView: 1,
-    });
   };
 
   btnLoadClick = () => {
@@ -62,11 +82,12 @@ export class App extends Component {
   };
 
   render() {
-    const { buttonActive, units, loader,error } = this.state;
+    const { buttonActive, units, loader, error, galleryRender } = this.state;
+
     return (
       <div className={css.app}>
         <Searchbar onSubmitSearchbar={this.submitSearchbar} />
-        <ImageGallery units={units} />
+        {galleryRender && <ImageGallery units={units} />}
         {loader && <Loader />}
         {buttonActive && <Button onBtnLoadClick={this.btnLoadClick} />}
         {error && <div>Error, Please reload this page!</div>}

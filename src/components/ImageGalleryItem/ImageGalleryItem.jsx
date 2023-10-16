@@ -23,7 +23,13 @@ export class ImageGalleryItemImage extends Component {
       });
     }
   };
-
+  
+  keyCloseModal=()=>{
+    this.setState({
+      modalActiv: false,
+    });
+  }
+  
   render() {
     const { unit } = this.props;
     const { modalActiv } = this.state;
@@ -42,6 +48,7 @@ export class ImageGalleryItemImage extends Component {
             img={this.state.imgId}
             alt={unit.tags}
             overlayClick={this.closeModal}
+            keyClose={this.keyCloseModal}
           />
         )}
       </>

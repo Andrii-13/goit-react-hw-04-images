@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import toast from 'react-hot-toast';
 
 import css from './Searchbar.module.css';
 
@@ -20,6 +21,14 @@ name: ''
 
   handlerSubmit = (e) => {
     e.preventDefault();
+    if (this.state.name.trim() === '') {
+      this.setState({
+        name: '',
+      });
+      toast('You enter empty query', {
+        icon: '🟨',
+      });     
+    }
     this.props.onSubmitSearchbar(this.state.name);
     }
  
