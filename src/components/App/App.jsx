@@ -41,7 +41,7 @@ export class App extends Component {
           });
         } else {
           this.setState({
-            units: responce,
+            units: [],
             galleryRender: false,
           });
           toast('Nothing was found', {
