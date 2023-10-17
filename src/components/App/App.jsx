@@ -6,55 +6,50 @@ import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { Searchbar } from '../Searchbar/Searchbar';
 import { Loader } from '../Loader/Loader';
 import { Button } from '../Button/Button';
-import { getQuantityImg, respFromBack } from 'js/respFromBack';
+import { getFetch } from 'js/api';
 
-const imgOnPage = 12;
 
 export class App extends Component {
   state = {
     units: [],
     name: '',
     buttonActive: false,
-    pagesView: 1,
+    currentPage: 1,
     loader: false,
     error: false,
     galleryRender: false,
-    allImages: null,
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
-    const { name, pagesView } = this.state;
-    if (prevState.name !== name || prevState.pagesView !== pagesView) {
-      const images = await getQuantityImg(name);
-      this.setState({
-        loader: true,
-        error: false,
-        galleryRender: true,
-        allImages: images,
-      });
+    const { name, currentPage, units } = this.state;
+    if (prevState.name !== name || prevState.currentPage !== currentPage) {
       try {
-        const responce = await respFromBack(name, pagesView, imgOnPage);
-        if (responce.length > 0) {
-          this.setState({
-            units: responce,
-            buttonActive: true,
+        this.setState({
+          loader: true,
+          error: false,
+          galleryRender: true,
+        });
+
+        const { hits, totalHits } = await getFetch(name, currentPage);
+        this.setState({
+          units: [...units, ...hits],
+          buttonActive: true,
+        });
+        
+        if (Math.ceil(totalHits / 12) === currentPage) {
+          toast('That is all', {
+            icon: '✅',
           });
-        } else {
           this.setState({
-            units: responce,
-            galleryRender: false,
+            buttonActive: false,
           });
+        }
+        if (hits.length === 0) {
           toast('Nothing was found', {
             icon: '🟨',
           });
-        }
-        if (
-          Math.ceil(this.state.allImages / imgOnPage) === this.state.pagesView
-        ) {
-          toast('That is all', {
-            icon: '✅',
-          });  
           this.setState({
+            galleryRender: false,
             buttonActive: false,
           });
         }
@@ -65,27 +60,21 @@ export class App extends Component {
         });
       } finally {
         this.setState({ loader: false });
-      }    }
+      }
+    }
   };
 
   submitSearchbar = data => {
     this.setState({
+      name: data,
       units: [],
-      buttonActive: false,
-      galleryRender: false,
+      currentPage: 1,
     });
-
-    if (data) {
-      this.setState({
-        name: data,
-        pagesView: 1,
-      });
-    }
   };
 
   btnLoadClick = () => {
-    this.setState(prevState => ({ pagesView: prevState.pagesView + 1 }));
-     };
+    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
+  };
 
   render() {
     const { buttonActive, units, loader, error, galleryRender } = this.state;
