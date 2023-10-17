@@ -34,14 +34,14 @@ export class App extends Component {
       });
       try {
         const responce = await respFromBack(name, pagesView, imgOnPage);
-        if (responce.length > 0 && this.state.name !== '') {
+        if (responce.length > 0) {
           this.setState({
             units: responce,
             buttonActive: true,
           });
         } else {
           this.setState({
-            units: [],
+            units: responce,
             galleryRender: false,
           });
           toast('Nothing was found', {
@@ -71,7 +71,6 @@ export class App extends Component {
   submitSearchbar = data => {
     this.setState({
       units: [],
-      name: '',
       buttonActive: false,
       galleryRender: false,
     });
