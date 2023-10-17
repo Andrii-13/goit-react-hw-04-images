@@ -65,8 +65,7 @@ export class App extends Component {
         });
       } finally {
         this.setState({ loader: false });
-      }
-    }
+      }    }
   };
 
   submitSearchbar = data => {
