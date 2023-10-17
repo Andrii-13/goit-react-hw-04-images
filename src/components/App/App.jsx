@@ -34,7 +34,7 @@ export class App extends Component {
       });
       try {
         const responce = await respFromBack(name, pagesView, imgOnPage);
-        if (responce.length > 0) {
+        if (responce.length > 0 && this.state.name !== '') {
           this.setState({
             units: responce,
             buttonActive: true,
