@@ -71,6 +71,7 @@ export class App extends Component {
   submitSearchbar = data => {
     this.setState({
       units: [],
+      name: '',
       buttonActive: false,
       galleryRender: false,
     });
