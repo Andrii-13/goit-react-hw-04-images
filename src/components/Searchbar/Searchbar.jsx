@@ -23,7 +23,8 @@ name: ''
       });
       toast('You enter empty query', {
         icon: '🟨',
-      });     
+      });  
+      this.props.onSubmitSearchbar(this.state.name);
     }
     this.props.onSubmitSearchbar(this.state.name);
     }
