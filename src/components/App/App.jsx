@@ -11,13 +11,14 @@ import { getFetch } from 'js/api';
 
 export class App extends Component {
   state = {
-    units: [],
     name: '',
-    buttonActive: false,
-    currentPage: 1,
+    units: [],
+    currentPage: 1,    
+    galleryRender: false,    
     loader: false,
     error: false,
-    galleryRender: false,
+    buttonActive: false,
+    
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -35,7 +36,7 @@ export class App extends Component {
           units: [...units, ...hits],
           buttonActive: true,
         });
-        
+
         if (Math.ceil(totalHits / 12) === currentPage) {
           toast('That is all', {
             icon: '✅',
