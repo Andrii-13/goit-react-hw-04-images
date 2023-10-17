@@ -9,11 +9,7 @@ export class Searchbar extends Component {
 name: ''
   }
 
-  handlChange = (input) =>{
-    this.setState({
-      [input.name]: ''
-    });
-    
+  handlChange = (input) =>{  
     this.setState({
       [input.name]: input.value
     })

@@ -6,7 +6,9 @@ import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { Searchbar } from '../Searchbar/Searchbar';
 import { Loader } from '../Loader/Loader';
 import { Button } from '../Button/Button';
-import { respFromBack } from 'js/respFromBack';
+import { getQuantityImg, respFromBack } from 'js/respFromBack';
+
+const imgOnPage = 12;
 
 export class App extends Component {
   state = {
@@ -17,37 +19,43 @@ export class App extends Component {
     loader: false,
     error: false,
     galleryRender: false,
+    allImages: null,
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
     const { name, pagesView } = this.state;
     if (prevState.name !== name || prevState.pagesView !== pagesView) {
-      if(!name){
-        this.setState({
-          name: '',
-          galleryRender: false,
-        });
-        return
-      }
+      const images = await getQuantityImg(name);
       this.setState({
         loader: true,
         error: false,
         galleryRender: true,
+        allImages: images,
       });
       try {
-        const responce = await respFromBack(name, pagesView);
-          console.log(responce);
-        if (responce.length >= 1) {
+        const responce = await respFromBack(name, pagesView, imgOnPage);
+        if (responce.length > 0) {
           this.setState({
             units: responce,
             buttonActive: true,
           });
         } else {
           this.setState({
+            units: responce,
             galleryRender: false,
           });
           toast('Nothing was found', {
             icon: '🟨',
+          });
+        }
+        if (
+          Math.ceil(this.state.allImages / imgOnPage) === this.state.pagesView
+        ) {
+          toast('That is all', {
+            icon: '✅',
+          });  
+          this.setState({
+            buttonActive: false,
           });
         }
       } catch (error) {
@@ -62,9 +70,8 @@ export class App extends Component {
   };
 
   submitSearchbar = data => {
-    console.log(data);
     this.setState({
-      name: '',
+      units: [],
       buttonActive: false,
       galleryRender: false,
     });
@@ -79,7 +86,7 @@ export class App extends Component {
 
   btnLoadClick = () => {
     this.setState(prevState => ({ pagesView: prevState.pagesView + 1 }));
-  };
+     };
 
   render() {
     const { buttonActive, units, loader, error, galleryRender } = this.state;
