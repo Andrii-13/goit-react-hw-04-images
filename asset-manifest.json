@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/goit-react-hw-03-image-finder/static/css/main.26ac2916.css",
+    "main.js": "/goit-react-hw-03-image-finder/static/js/main.18d60de2.js",
+    "index.html": "/goit-react-hw-03-image-finder/index.html",
+    "static/media/search-dandruff.svg": "/goit-react-hw-03-image-finder/static/media/search-dandruff.7a97e1812356b513b8d2.svg",
+    "main.26ac2916.css.map": "/goit-react-hw-03-image-finder/static/css/main.26ac2916.css.map",
+    "main.18d60de2.js.map": "/goit-react-hw-03-image-finder/static/js/main.18d60de2.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.26ac2916.css",
+    "static/js/main.18d60de2.js"
+  ]
+}
