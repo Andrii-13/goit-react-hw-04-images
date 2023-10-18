@@ -13,8 +13,7 @@ export class App extends Component {
   state = {
     name: '',
     units: [],
-    currentPage: 1,    
-    galleryRender: false,    
+    currentPage: 1,
     loader: false,
     error: false,
     buttonActive: false,
@@ -28,7 +27,6 @@ export class App extends Component {
         this.setState({
           loader: true,
           error: false,
-          galleryRender: true,
         });
 
         const { hits, totalHits } = await getFetch(name, currentPage);
@@ -50,7 +48,6 @@ export class App extends Component {
             icon: '🟨',
           });
           this.setState({
-            galleryRender: false,
             buttonActive: false,
           });
         }
@@ -78,12 +75,12 @@ export class App extends Component {
   };
 
   render() {
-    const { buttonActive, units, loader, error, galleryRender } = this.state;
+    const { buttonActive, units, loader, error } = this.state;
 
     return (
       <div className={css.app}>
         <Searchbar onSubmitSearchbar={this.submitSearchbar} />
-        {galleryRender && <ImageGallery units={units} />}
+        <ImageGallery units={units} />
         {loader && <Loader />}
         {buttonActive && <Button onBtnLoadClick={this.btnLoadClick} />}
         {error && <div>Error, Please reload this page!</div>}
