@@ -20,7 +20,7 @@ export const App = () => {
     if (name === '') {
       return;
     }
- 
+
     try {
       setLoader(true);
       setError(false);
@@ -51,7 +51,6 @@ export const App = () => {
     } finally {
       setLoader(false);
     }
-
   }, [name, currentPage]);
 
   const submitSearchbar = data => {
@@ -67,7 +66,7 @@ export const App = () => {
   return (
     <div className={css.app}>
       <Searchbar onSubmitSearchbar={submitSearchbar} />
-      {name && <ImageGallery units={units} />}
+      {units.length > 0 && <ImageGallery units={units} />}
       {loader && <Loader />}
       {buttonActive && name && <Button onBtnLoadClick={btnLoadClick} />}
       {error && <div>Error, Please reload this page!</div>}
