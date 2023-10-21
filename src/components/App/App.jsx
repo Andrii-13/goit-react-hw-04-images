@@ -30,7 +30,7 @@ export const App = () => {
         setError(false);
         const getResult = async () => {
           const { hits, totalHits } = await getFetch(name, currentPage);
-          setUnits([...units, ...hits]);
+          setUnits(prevUnits => [...prevUnits, ...hits]);
           setButtonActive(true);
           if (Math.ceil(totalHits / 12) === currentPage) {
             toast('That is all', {
@@ -81,29 +81,3 @@ export const App = () => {
     </div>
   );
 };
-
-// componentDidUpdate = async (prevProps, prevState) => {
-//   const { name, currentPage, units } = this.state;
-//   if (prevState.name !== name || prevState.currentPage !== currentPage) {
-//
-//
-
-//
-//       if (Math.ceil(totalHits / 12) === currentPage) {
-//         toast('That is all', {
-//           icon: '✅',
-//         });
-//         this.setState({
-//           buttonActive: false,
-//         });
-//       }
-//       if (hits.length === 0) {
-//         toast('Nothing was found', {
-//           icon: '🟨',
-//         });
-//         this.setState({
-//           buttonActive: false,
-//         });
-//       }//
-//   }
-// };
