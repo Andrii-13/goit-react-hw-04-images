@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import css from './App.module.css';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -9,83 +9,101 @@ import { Button } from '../Button/Button';
 import { getFetch } from 'js/api';
 
 
-export class App extends Component {
-  state = {
-    name: '',
-    units: [],
-    currentPage: 1,
-    loader: false,
-    error: false,
-    buttonActive: false,
-    
-  };
+export const App = () => {
+  const [name, setName] = useState('');
+  const [units, setUnits] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState(false);
+  const [buttonActive, setButtonActive] = useState(false);
 
-  componentDidUpdate = async (prevProps, prevState) => {
-    const { name, currentPage, units } = this.state;
-    if (prevState.name !== name || prevState.currentPage !== currentPage) {
+  useEffect(() => {
+    if (name === ''){
+      return;
+    }
+    // if (
+    //   setName(prevName => prevName) !== name ||
+    //   setCurrentPage(prevCurrentPage => prevCurrentPage) !== currentPage
+    // ) {
       try {
-        this.setState({
-          loader: true,
-          error: false,
-        });
-
-        const { hits, totalHits } = await getFetch(name, currentPage);
-        this.setState({
-          units: [...units, ...hits],
-          buttonActive: true,
-        });
-
-        if (Math.ceil(totalHits / 12) === currentPage) {
-          toast('That is all', {
-            icon: '✅',
-          });
-          this.setState({
-            buttonActive: false,
-          });
-        }
-        if (hits.length === 0) {
-          toast('Nothing was found', {
-            icon: '🟨',
-          });
-          this.setState({
-            buttonActive: false,
-          });
-        }
-      } catch (error) {
-        this.setState({ error: true });
+        setLoader(true);
+        setError(false);
+        const getResult = async () => {
+          const { hits, totalHits } = await getFetch(name, currentPage);
+          setUnits([...units, ...hits]);
+          setButtonActive(true);
+          if (Math.ceil(totalHits / 12) === currentPage) {
+            toast('That is all', {
+              icon: '✅',
+            });
+  
+            setButtonActive(false);
+            
+          }
+          if (hits.length === 0) {
+            toast('Nothing was found', {
+              icon: '🟨',
+            });
+            setButtonActive(false);
+          }
+        };
+        getResult();
+        
+      } catch {
+        setError(true);
         toast('Error, Please reload this page!', {
           icon: '🟥',
         });
       } finally {
-        this.setState({ loader: false });
+        setLoader(false);
       }
-    }
+    // }
+  }, [name, currentPage]);
+
+  const submitSearchbar = data => {
+    setName(data);
+    setUnits([]);
+    setCurrentPage(1);
   };
 
-  submitSearchbar = data => {
-    this.setState({
-      name: data,
-      units: [],
-      currentPage: 1,
-    });
+  const btnLoadClick = () => {
+    setCurrentPage(prevPage => prevPage + 1);
   };
 
-  btnLoadClick = () => {
-    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
-  };
+  return (
+    <div className={css.app}>
+      <Searchbar onSubmitSearchbar={submitSearchbar} />
+      <ImageGallery units={units} />
+      {loader && <Loader />}
+      {buttonActive && <Button onBtnLoadClick={btnLoadClick} />}
+      {error && <div>Error, Please reload this page!</div>}
+      <Toaster />
+    </div>
+  );
+};
 
-  render() {
-    const { buttonActive, units, loader, error } = this.state;
+// componentDidUpdate = async (prevProps, prevState) => {
+//   const { name, currentPage, units } = this.state;
+//   if (prevState.name !== name || prevState.currentPage !== currentPage) {
+//
+//
 
-    return (
-      <div className={css.app}>
-        <Searchbar onSubmitSearchbar={this.submitSearchbar} />
-        <ImageGallery units={units} />
-        {loader && <Loader />}
-        {buttonActive && <Button onBtnLoadClick={this.btnLoadClick} />}
-        {error && <div>Error, Please reload this page!</div>}
-        <Toaster />
-      </div>
-    );
-  }
-}
+//
+//       if (Math.ceil(totalHits / 12) === currentPage) {
+//         toast('That is all', {
+//           icon: '✅',
+//         });
+//         this.setState({
+//           buttonActive: false,
+//         });
+//       }
+//       if (hits.length === 0) {
+//         toast('Nothing was found', {
+//           icon: '🟨',
+//         });
+//         this.setState({
+//           buttonActive: false,
+//         });
+//       }//
+//   }
+// };

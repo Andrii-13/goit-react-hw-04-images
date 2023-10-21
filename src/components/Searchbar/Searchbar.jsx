@@ -1,52 +1,44 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 
 import css from './Searchbar.module.css';
 
+export const Searchbar = ({onSubmitSearchbar}) => {
+  const [name, setName] = useState('');
 
-export class Searchbar extends Component {
-  state = {
-name: ''
-  }
+  const handlChange = input => {
+    setName(input.value);
+  };
 
-  handlChange = (input) =>{  
-    this.setState({
-      [input.name]: input.value
-    })
-  }
-
-  handlerSubmit = (e) => {
+  const handlerSubmit = e => {
     e.preventDefault();
-    if (this.state.name.trim() === '') {
-      this.setState({
-        name: '',
-      });
+    if (name.trim() === '') {
+      setName('');
       toast('You enter empty query', {
         icon: '🟨',
-      });     
+      });
     }
-    this.props.onSubmitSearchbar(this.state.name);
-    }
- 
-  render(){
+    onSubmitSearchbar(name);
+  };
+
   return (
     <header className={css.searchbar}>
-      <form className={css.searchForm} onSubmit={this.handlerSubmit} >
+      <form className={css.searchForm} onSubmit={handlerSubmit}>
         <button type="submit" className={css.searchFormButton}>
           <span className={css.searchFormButtonLabel}></span>
         </button>
 
         <input
-          name = 'name'
+          name="name"
           className={css.searchFormInput}
           type="text"
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"
-          value = {this.state.name}
-          onChange={(e)=>this.handlChange(e.target)}
+          value={name}
+          onChange={e => handlChange(e.target)}
         />
       </form>
     </header>
-  );}
+  );
 };
