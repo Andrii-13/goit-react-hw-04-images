@@ -8,7 +8,6 @@ import { Loader } from '../Loader/Loader';
 import { Button } from '../Button/Button';
 import { getFetch } from 'js/api';
 
-
 export const App = () => {
   const [name, setName] = useState('');
   const [units, setUnits] = useState([]);
@@ -18,46 +17,41 @@ export const App = () => {
   const [buttonActive, setButtonActive] = useState(false);
 
   useEffect(() => {
-    if (name === ''){
+    if (name === '') {
       return;
     }
-    // if (
-    //   setName(prevName => prevName) !== name ||
-    //   setCurrentPage(prevCurrentPage => prevCurrentPage) !== currentPage
-    // ) {
-      try {
-        setLoader(true);
-        setError(false);
-        const getResult = async () => {
-          const { hits, totalHits } = await getFetch(name, currentPage);
-          setUnits(prevUnits => [...prevUnits, ...hits]);
-          setButtonActive(true);
-          if (Math.ceil(totalHits / 12) === currentPage) {
-            toast('That is all', {
-              icon: '✅',
-            });
-  
-            setButtonActive(false);
-            
-          }
-          if (hits.length === 0) {
-            toast('Nothing was found', {
-              icon: '🟨',
-            });
-            setButtonActive(false);
-          }
-        };
-        getResult();
-        
-      } catch {
-        setError(true);
-        toast('Error, Please reload this page!', {
-          icon: '🟥',
-        });
-      } finally {
-        setLoader(false);
-      }
-    // }
+ 
+    try {
+      setLoader(true);
+      setError(false);
+      const getResult = async () => {
+        const { hits, totalHits } = await getFetch(name, currentPage);
+        setUnits(prevUnits => [...prevUnits, ...hits]);
+        setButtonActive(true);
+        if (Math.ceil(totalHits / 12) === currentPage) {
+          toast('That is all', {
+            icon: '✅',
+          });
+
+          setButtonActive(false);
+        }
+        if (hits.length === 0) {
+          toast('Nothing was found', {
+            icon: '🟨',
+          });
+          setButtonActive(false);
+        }
+      };
+      getResult();
+    } catch {
+      setError(true);
+      toast('Error, Please reload this page!', {
+        icon: '🟥',
+      });
+    } finally {
+      setLoader(false);
+    }
+
   }, [name, currentPage]);
 
   const submitSearchbar = data => {
@@ -73,9 +67,9 @@ export const App = () => {
   return (
     <div className={css.app}>
       <Searchbar onSubmitSearchbar={submitSearchbar} />
-      <ImageGallery units={units} />
+      {name && <ImageGallery units={units} />}
       {loader && <Loader />}
-      {buttonActive && <Button onBtnLoadClick={btnLoadClick} />}
+      {buttonActive && name && <Button onBtnLoadClick={btnLoadClick} />}
       {error && <div>Error, Please reload this page!</div>}
       <Toaster />
     </div>
